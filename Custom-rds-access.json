@@ -1,0 +1,71 @@
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "rds:Describe*",
+                "cloudwatch:DescribeAlarms",
+                "cloudwatch:GetMetricStatistics",
+                "cloudwatch:PutMetricAlarm",
+                "rds:CreateDBSubnetGroup",
+                "rds:AddTagsToResource",
+                "rds:ListTagsForResource",
+                "iam:GetRole",
+                "sns:ListSubscriptions",
+                "sns:ListTopics",
+                "sns:Publish",
+                "logs:DescribeLogStreams",
+                "logs:GetLogEvents",
+                "application-autoscaling:DescribeScalableTargets",
+                "application-autoscaling:DescribeScalingActivities",
+                "application-autoscaling:DescribeScalingPolicies",
+                "application-autoscaling:PutScalingPolicy",
+                "application-autoscaling:RegisterScalableTarget"
+            ],
+            "Resource": "*"
+        },
+        {
+            "Sid": "LimitDBInstance",
+            "Effect": "Allow",
+            "Action": "rds:CreateDBInstance",
+            "Resource": "*",
+            "Condition": {
+                "StringEquals": {
+                    "rds:DatabaseEngine": "mysql",
+                    "rds:DatabaseClass": "db.t2.micro"
+                }
+            }
+        },
+        {
+            "Sid": "LimitModify",
+            "Effect": "Allow",
+            "Action": "rds:ModifyDBInstance",
+            "Resource": "*",
+            "Condition": {
+                "StringEquals": {
+                    "rds:DatabaseEngine": "mysql",
+                    "rds:DatabaseClass": "db.t2.micro"
+                }
+            }
+        },
+        {
+            "Action": "pi:*",
+            "Effect": "Allow",
+            "Resource": "arn:aws:pi:*:*:metrics/rds/*"
+        },
+        {
+            "Action": "iam:CreateServiceLinkedRole",
+            "Effect": "Allow",
+            "Resource": "*",
+            "Condition": {
+                "StringLike": {
+                    "iam:AWSServiceName": [
+                        "rds.amazonaws.com",
+                        "rds.application-autoscaling.amazonaws.com"
+                    ]
+                }
+            }
+        }
+    ]
+}
